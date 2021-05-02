@@ -21,17 +21,29 @@ public class DoMain extends BankUI{
 
 	public static void main(String[] args) {
 		
-		int nowPage;
+		int nowPage = 1;
+		int movePage = 0;
+		menuData.pushMenuNo(nowPage);
+		menuData.pushMenuMoveNo(movePage);
+
 		
-		menuData.pushMenuNo(uiC.bankUIController(MAIN_MENU,THIS_MENU));
+		/*
+		 * menuData.pushMenuNo(uiC.bankUIController(MAIN_MENU,THIS_MENU));
+		 * uiC.bankUIController(INPUT_MENU,THIS_MENU);
+		 */
+		 
 		//uiC.bankUIController(menuData);					//초기화면 불러오기
 
 		while(true) {
-			uiC.bankUIController(INPUT_MENU,THIS_MENU);
 			nowPage = menuData.peekhMenuNo();
-			menuData.pushMenuNo(uiC.bankUIController(nowPage,sc.nextInt()));
+			menuData.pushMenuNo(uiC.bankUIController(nowPage,movePage));
+			uiC.bankUIController(INPUT_MENU,THIS_MENU);
+			movePage = sc.nextInt();
+			menuData.pushMenuMoveNo(movePage);
 			
-			dbC.debitController(menuData.peekhMenuNo(),userData,debitData);
+			if(dbC.debitController(menuData.peekhMenuNo(),userData,debitData)) {
+				menuData.popMenuNo();
+			}
 
 			//menuData = uiC.bankUIController(menuData);
 			if(menuData.peekhMenuNo() == EXIT_PROGRAM) {
