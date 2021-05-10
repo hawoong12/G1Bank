@@ -2,54 +2,40 @@ package com.gbank.main;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import com.gbank.ui.BankUI;
+
+import com.gbank.controller.BankController;
 import com.gbank.controller.DebitController;
-import com.gbank.controller.UIController;
 import com.gbank.data.*;
 
-public class DoMain extends BankUI{
+public class DoMain {
 
-	
-	static Scanner sc 			= new Scanner(System.in);
-	static UIController uiC 	= new UIController();
-	static DebitController dbC	= new DebitController();
-	static MenuData menuData 	= new MenuData();
-	
+	static Scanner sc = new Scanner(System.in);
+	static DebitController dbC = new DebitController();
+	static BankController bkC = new BankController();
+
+
 	static ArrayList<UserData> userData = new ArrayList<UserData>();
 	static ArrayList<DebitData> debitData = new ArrayList<DebitData>();
-
+	static ArrayList<BankData> bankData = new ArrayList<BankData>();
 
 	public static void main(String[] args) {
+		UserData tempUser = new UserData();
+		tempUser = userSetting("김지원", "01040151727", "1990-03-29");
+		dbC.debitCreate(debitData, userData, tempUser);
+		tempUser = userSetting("김지원", "01040151727", "1990-03-29");
+		dbC.debitCreate(debitData, userData, tempUser);
 		
-		int nowPage = 1;
-		int movePage = 0;
-		menuData.pushMenuNo(nowPage);
-		menuData.pushMenuMoveNo(movePage);
+		bkC.depositAtm(debitData,bkC.serchUserDebit(debitData,1,"01040151727"),1000000);
+	}
 
-		
-		/*
-		 * menuData.pushMenuNo(uiC.bankUIController(MAIN_MENU,THIS_MENU));
-		 * uiC.bankUIController(INPUT_MENU,THIS_MENU);
-		 */
-		 
-		//uiC.bankUIController(menuData);					//초기화면 불러오기
+	public static UserData userSetting(String name, String phone, String birth) {
+		UserData tempUser = new UserData();
 
-		while(true) {
-			nowPage = menuData.peekhMenuNo();
-			menuData.pushMenuNo(uiC.bankUIController(nowPage,movePage));
-			uiC.bankUIController(INPUT_MENU,THIS_MENU);
-			movePage = sc.nextInt();
-			menuData.pushMenuMoveNo(movePage);
-			
-			if(dbC.debitController(menuData.peekhMenuNo(),userData,debitData)) {
-				menuData.popMenuNo();
-			}
+		tempUser.setUserNo(userData.size() + 1);
+		tempUser.setUserName(name);
+		tempUser.setUserPhone(phone);
+		tempUser.setUserBirth(birth);
 
-			//menuData = uiC.bankUIController(menuData);
-			if(menuData.peekhMenuNo() == EXIT_PROGRAM) {
-				System.out.println("프로그램을 종료합니다.");
-				break;
-			}// menu선택 스택에 값이 없으면 종료
-		}	
-	}	
+		return tempUser;
+	}
 }

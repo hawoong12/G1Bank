@@ -1,12 +1,7 @@
 package com.gbank.data;
 
 public class UserData {
-	
-	public final static int USER_NO 	= 0;
-	public final static int USER_NAME 	= 1;
-	public final static int USER_PHONE 	= 2;
-	public final static int USER_BIRTH 	= 3;
-	public final static int USER_SATUS 	= 4;
+
 
 	
 	private int	   userNo;					//가입 순서 
