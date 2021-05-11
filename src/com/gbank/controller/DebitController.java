@@ -30,7 +30,7 @@ public class DebitController {
 		} else {
 			System.out.println("기존고객입니다. 신규 계좌를 개설합니다.");
 		}
-		debitIssuance(debitData, newUser.getUserPhone());
+		debitIssuance(debitData, newUser);
 	}
 
 	/**
@@ -42,11 +42,12 @@ public class DebitController {
 	 * @tags : @param userPhoneNum
 	 * @todo : 계좌정보 생성
 	 */
-	public void debitIssuance(ArrayList<DebitData> debitData, String userPhoneNum) {
+	public void debitIssuance(ArrayList<DebitData> debitData, UserData newUser) {
 		boolean chkDebitNum = true;
 		DebitData tempDebitData = new DebitData();
 
-		tempDebitData.setDebitPhone(userPhoneNum);
+		tempDebitData.setDebitPhone(newUser.getUserPhone());
+		tempDebitData.setDebitUserName(newUser.getUserName());
 		tempDebitData.setDebitBalance(0);
 		tempDebitData.setBankNo(dd.G1_BANK);
 		tempDebitData.setDebitName("입출금 통장");
@@ -55,7 +56,7 @@ public class DebitController {
 			tempDebitData.setDebitNum(dd.G1_BANK + debitNumRandCreate());
 			chkDebitNum = debitNumDuplicateCheck(tempDebitData, debitData);
 		}
-		System.out.println(userPhoneNum + " 님의 신규 계좌번호 : " + tempDebitData.getDebitNum());
+		System.out.println(newUser.getUserName() + " 님의 신규 계좌번호 : " + tempDebitData.getDebitNum());
 		debitData.add(tempDebitData);
 		System.out.println("계좌 생성이 완료되었습니다.");
 	}

@@ -22,10 +22,16 @@ public class DoMain {
 		UserData tempUser = new UserData();
 		tempUser = userSetting("±èÁö¿ø", "01040151727", "1990-03-29");
 		dbC.debitCreate(debitData, userData, tempUser);
+		UI();
 		tempUser = userSetting("±èÁö¿ø", "01040151727", "1990-03-29");
 		dbC.debitCreate(debitData, userData, tempUser);
-		
-		bkC.depositAtm(debitData,bkC.serchUserDebit(debitData,1,"01040151727"),1000000);
+		UI();
+		bkC.depositAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01040151727"),1000000);
+		UI();
+		bkC.depositAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01040151727"),2000000);
+		UI();
+		bkC.depositAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01040151727"),3000000);
+
 	}
 
 	public static UserData userSetting(String name, String phone, String birth) {
@@ -37,5 +43,9 @@ public class DoMain {
 		tempUser.setUserBirth(birth);
 
 		return tempUser;
+	}
+	
+	public static void UI() {
+		System.out.println("--------------------");
 	}
 }
