@@ -61,11 +61,12 @@ public class BankController {
 		}
 	}
 	
-
+	/*입금 히스토리 INSERT*/
 	public void depsitHisInsert(ArrayList<DebitData> debitData, ArrayList<BankData> bankData, int deposit, int debitUniq) {
 		
 		BankData tempBankData = new BankData(debitUniq+""
 											 , depsWithdHisCount(debitData, bankData, debitUniq) +""
+											 , debitData.get(debitUniq).getDebitNum()
 											 , bd.DEPOSIT
 											 , debitData.get(debitUniq).getDebitUserName()
 											 , debitData.get(debitUniq).getDebitNum()
@@ -98,5 +99,33 @@ public class BankController {
 		String dateToStr = format.format(date.toInstant()); 
 		
 		return dateToStr;
+	}
+	
+	/*입출금 내역 출력 컨트롤러*/
+	public void depsWithHisPrintController(ArrayList<BankData> bankData, String debitNum) {
+		//System.out.println("번호 / 계좌번호 / 거래유형 / 수신자명 / 수신자 계좌번호 / 수신자 은행코드 / ");
+		for(int i = 0 ; i < bankData.size() ; i++) {
+			if(bankData.get(i).getUserDebitNum().equals(debitNum)) {
+				BankData tempBD = bankData.get(i);
+				if(tempBD.getTrState().equals(bd.DEPOSIT)) {
+					depositHisPrint(tempBD);
+				}else if(tempBD.getTrState().equals(bd.WITHDRAWAL)) {
+					
+				}else if(tempBD.getTrState().equals(bd.RECV_REMITTANCE)) {
+					
+				}else if(tempBD.getTrState().equals(bd.CALL_REMITTANCE)) {
+						
+				}
+			}
+		}
+	}
+	
+	/*입금 내역 출력*/
+	public void depositHisPrint(BankData bankData) {
+		System.out.println(bankData.getTrHisNo() + " / " + bankData.getRecvDebitNum() + " / " + bankData.getUserDebitNum() + " / " 
+				+ "입금" + " / " + bankData.getRecvUserName() + "/" + bankData.getRecvDebitNum() + " / "
+				+ " / " + bankData.getRecvBankName() + " / " + bankData.getCallUserName() + " / " + bankData.getCallDebitNum()
+				+ " / " + bankData.getCallBankName() + " / " + bankData.getCallRemittance() + " / " + bankData.getDebitBalance());
+		
 	}
 }

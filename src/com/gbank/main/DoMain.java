@@ -31,6 +31,8 @@ public class DoMain {
 		bkC.depositAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01040151727"),2000000);
 		UI();
 		bkC.depositAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01040151727"),3000000);
+		
+		bkC.depsWithHisPrintController(bankData, bkC.serchUserDebit(debitData,1,"01040151727"));
 
 	}
 

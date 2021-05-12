@@ -10,24 +10,26 @@ public class BankData {
 
 	private String debitUniq;		/* 계좌 유니크 번호 */
 	private String trHisNo; 		/* 거래내역번호 */
+	private String userDebitNum;	/* 계좌 소유자 계좌번호 */
 	private String trState; 		/* 입,출금코드 */
 	private String recvUserName; 	/* 수신자명 */
 	private String recvDebitNum; 	/* 수신자 계좌번호 */
-	private String recvBankName; 	/* 수신자 계좌번호 */
+	private String recvBankName; 	/* 수신자 은행코드 */
 	private String recvDate; 		/* 수신날짜 */
 	private String callUserName;	/* 발신자명 */
 	private String callDebitNum; 	/* 발신자 계좌번호 */
-	private String callBankName; 	/* 수신자 계좌번호 */
+	private String callBankName; 	/* 발신자 은행코드 */
 	private int callRemittance;		/* 발신자 송금액 */
 	private int debitBalance; 		/* 수신자 잔액 */
 	
 	public BankData(){};
-	public BankData(String debitUniq, String trHisNo, String trState, String recvUserName
+	public BankData(String debitUniq, String trHisNo, String userDebitNum, String trState, String recvUserName
 			, String recvDebitNum, String recvBankName, String recvDate, String callUserName, String callDebitNum
 			, String callBankName, int callRemittance, int debitBalance) {
 		this.debitUniq 		= debitUniq;
 		this.trHisNo 		= trHisNo;
 		this.trState 		= trState;
+		this.userDebitNum	= userDebitNum;
 		this.recvUserName 	= recvUserName;
 		this.recvDebitNum 	= recvDebitNum;
 		this.recvBankName	= recvBankName;
@@ -129,6 +131,12 @@ public class BankData {
 	}
 	public void setCallBankName(String callBankName) {
 		this.callBankName = callBankName;
+	}
+	public String getUserDebitNum() {
+		return userDebitNum;
+	}
+	public void setUserDebitNum(String userDebitNum) {
+		this.userDebitNum = userDebitNum;
 	}
 
 	
