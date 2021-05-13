@@ -47,7 +47,7 @@ public class DebitController {
 
     tempDebitData.setDebitPhone(newUser.getUserPhone());
     tempDebitData.setDebitUserName(newUser.getUserName());
-    tempDebitData.setDebitBalance(0);
+    tempDebitData.setAccountBalance(0);
     tempDebitData.setBankNo(dd.G1_BANK);
     tempDebitData.setDebitName("입출금 통장");
     tempDebitData.setDebitStatus("U");

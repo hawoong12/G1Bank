@@ -20,7 +20,7 @@ public class BankData {
   private String callDebitNum;  /* 발신자 계좌번호 */
   private String callBankName;  /* 발신자 은행코드 */
   private int callRemittance;    /* 발신자 송금액 */
-  private int debitBalance;    /* 수신자 잔액 */
+  private int accountBalance;    /* 수신자 잔액 */
 
   public BankData() {
   }
@@ -29,7 +29,7 @@ public class BankData {
       String recvUserName
       , String recvDebitNum, String recvBankName, String recvDate, String callUserName,
       String callDebitNum
-      , String callBankName, int callRemittance, int debitBalance) {
+      , String callBankName, int callRemittance, int accountBalance) {
     this.debitUniq = debitUniq;
     this.trHisNo = trHisNo;
     this.userDebitNum = userDebitNum;
@@ -42,7 +42,7 @@ public class BankData {
     this.callDebitNum = callDebitNum;
     this.callBankName = callBankName;
     this.callRemittance = callRemittance;
-    this.debitBalance = debitBalance;
+    this.accountBalance = accountBalance;
   }
 
   public String getTrState() {
@@ -101,12 +101,12 @@ public class BankData {
     this.callRemittance = callRemittance;
   }
 
-  public int getDebitBalance() {
-    return debitBalance;
+  public int getAccountBalance() {
+    return accountBalance;
   }
 
-  public void setDebitBalance(int debitBalance) {
-    this.debitBalance = debitBalance;
+  public void setAccountBalance(int accountBalance) {
+    this.accountBalance = accountBalance;
   }
 
   public String getDebitUniq() {

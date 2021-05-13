@@ -11,7 +11,7 @@ public class DebitData {
   public final String K_BANK = "006";  /* 케이뱅크 은행코드 */
   public final String KD_BANK = "007"; /* 기업은행 은행코드 */
 
-  private int debitBalance;    // 계좌잔고
+  private int accountBalance;    // 계좌잔고
   private String debitNum;    // 계좌번호
   private String bankNo;      // 은행 고유번호
   private String debitName;    // 계좌 이름
@@ -19,6 +19,10 @@ public class DebitData {
   private String debitPhone;    // 계좌소유자 폰번호 (유저 데이터와 이어지는 PK)
   private String debitStatus;  // 계좌의 현상태 (사용 : U, 정지 : S, 미사용 : X)
 
+  public DebitData() {
+	  
+  }
+  
   public String getDebitStatus() {
     return debitStatus;
   }
@@ -35,12 +39,12 @@ public class DebitData {
     this.debitNum = debitNum;
   }
 
-  public int getDebitBalance() {
-    return debitBalance;
+  public int getAccountBalance() {
+    return accountBalance;
   }
 
-  public void setDebitBalance(int debitBalance) {
-    this.debitBalance = debitBalance;
+  public void setAccountBalance(int accountBalance) {
+    this.accountBalance = accountBalance;
   }
 
   public String getDebitName() {
