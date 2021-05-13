@@ -28,8 +28,8 @@ public class BankData {
 			, String callBankName, int callRemittance, int debitBalance) {
 		this.debitUniq 		= debitUniq;
 		this.trHisNo 		= trHisNo;
-		this.trState 		= trState;
 		this.userDebitNum	= userDebitNum;
+		this.trState 		= trState;
 		this.recvUserName 	= recvUserName;
 		this.recvDebitNum 	= recvDebitNum;
 		this.recvBankName	= recvBankName;

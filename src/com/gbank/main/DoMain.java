@@ -31,8 +31,24 @@ public class DoMain {
 		bkC.depositAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01040151727"),2000000);
 		UI();
 		bkC.depositAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01040151727"),3000000);
-		
+		UI();
 		bkC.depsWithHisPrintController(bankData, bkC.serchUserDebit(debitData,1,"01040151727"));
+		UI();
+		bkC.WithdrawalAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01040151727"),2000000);
+		UI();
+		bkC.WithdrawalAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01040151727"),2000000);
+		UI();
+		bkC.WithdrawalAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01040151727"),4000000);
+		UI();
+		bkC.depsWithHisPrintController(bankData, bkC.serchUserDebit(debitData,1,"01040151727"));
+		UI();
+		UI();
+		tempUser = userSetting("±Ë√‘Ω∫", "01011112222", "1920-05-02");
+		dbC.debitCreate(debitData, userData, tempUser);
+		UI();
+		bkC.depositAtm(debitData,bankData,bkC.serchUserDebit(debitData,1,"01011112222"),6000000);
+		UI();
+		bkC.depsWithHisPrintController(bankData, bkC.serchUserDebit(debitData,1,"01011112222"));
 
 	}
 
