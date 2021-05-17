@@ -10,17 +10,63 @@ import java.util.Date;
 public class BankController {
 
   BankData bd = new BankData();
+  /*입금 출금 내역입력 컨트롤러*/
+  public void depsitNWithdrawalHisController(ArrayList<DebitData> debitData,
+      ArrayList<BankData> bankData, int deposit, int debitUniq, String hisType) {
+    if (hisType == bd.DEPOSIT) {
+      depsitHisInsert(debitData, bankData, deposit, debitUniq);
+    } else if (hisType == bd.WITHDRAWAL) {
+      withdrawalHisInsert(debitData, bankData, deposit, debitUniq);
+    }
+  }
+  
+  /*송금하기, 송금받기 내역입력 컨트롤러*/
+  public void recvNcallRemittanceHisController(ArrayList<DebitData> debitData,
+      ArrayList<BankData> bankData, int debitUniq, String userName, String bankName, String debitNum, int deposit, String hisType) {
+    if (hisType == bd.RECV_REMITTANCE) {
+        recvBankRemittanceHisInsert(debitData, bankData, debitUniq, userName, bankName, debitNum, deposit);
+
+    } else if (hisType == bd.CALL_REMITTANCE) {
+        callBankRemittanceHisInsert(debitData, bankData, debitUniq, userName, bankName, debitNum, deposit);
+    }
+  }
+  
+  /*입출금 내역 출력 컨트롤러*/
+  public void depsWithHisPrintController(ArrayList<BankData> bankData, String debitNum) {
+    //System.out.println("번호 / 계좌번호 / 거래유형 / 수신자명 / 수신자 계좌번호 / 수신자 은행코드 / ");
+	String bankCodeName = null;
+    for (int i = 0; i < bankData.size(); i++) {
+      if (bankData.get(i).getUserDebitNum().equals(debitNum)) {
+        BankData tempBD = bankData.get(i);
+        if(tempBD.getTrState() != null) {
+        	if (tempBD.getTrState().equals(bd.DEPOSIT)) {
+        		bankCodeName = "입금";
+            } else if (tempBD.getTrState().equals(bd.WITHDRAWAL)) {
+            	bankCodeName = "출금";
+            } else if (tempBD.getTrState().equals(bd.RECV_REMITTANCE)) {
+            	bankCodeName = "송금받기";
+            } else if (tempBD.getTrState().equals(bd.CALL_REMITTANCE)) {
+            	bankCodeName = "송금하기";
+            }
+        	depsWithHisPrint(tempBD, bankCodeName);
+        }
+      }
+    }
+  }
+
 
   /*계좌 입금*/
   public void depositAtm(ArrayList<DebitData> debitData, ArrayList<BankData> bankData,
       String recvDebitNum, int deposit) {
-    //변수명은 길더라도 주석이 없이 이해할수 있게 debitBalance 이런거 변수명보면 무슨뜻인지 이해가 안되니까
+    //변수명은 길더라도 주석이 없이 이해할수 있게 AccountBalance 이런거 변수명보면 무슨뜻인지 이해가 안되니까
     int debitUniq = Integer.parseInt(serchUserDebit(debitData, 2, recvDebitNum));
-    int debitBalance = debitData.get(debitUniq).getDebitBalance();
+    int accountBalance = debitData.get(debitUniq).getAccountBalance();
+    int CalculateBalance = accountBalance + deposit;
 
-    debitData.get(debitUniq).setDebitBalance(debitBalance + deposit);
+
+    debitData.get(debitUniq).setAccountBalance(CalculateBalance);
     System.out.println(debitData.get(debitUniq).getDebitPhone() + "님의 계좌 잔고는 "
-        + debitData.get(debitUniq).getDebitBalance() + " 원입니다.");
+        + debitData.get(debitUniq).getAccountBalance() + " 원입니다.");
 
     depsitNWithdrawalHisController(debitData, bankData, deposit, debitUniq, bd.DEPOSIT);
   }
@@ -29,29 +75,57 @@ public class BankController {
   public void WithdrawalAtm(ArrayList<DebitData> debitData, ArrayList<BankData> bankData,
       String callDebitNum, int deposit) {
     int debitUniq = Integer.parseInt(serchUserDebit(debitData, 2, callDebitNum));
-    int debitBalance = debitData.get(debitUniq).getDebitBalance();
+    int accountBalance = debitData.get(debitUniq).getAccountBalance();
+    int CalculateBalance = accountBalance - deposit;
 
-    if (!checkBalance(debitBalance - deposit)) {
+
+    if (!checkNegativeBalance(CalculateBalance)) {
       return;
     }
-    debitData.get(debitUniq).setDebitBalance(debitBalance - deposit);
+    debitData.get(debitUniq).setAccountBalance(accountBalance - deposit);
     System.out.println(debitData.get(debitUniq).getDebitPhone() + "님의 계좌 잔고는 "
-        + debitData.get(debitUniq).getDebitBalance() + " 원입니다.");
+        + debitData.get(debitUniq).getAccountBalance() + " 원입니다.");
 
     depsitNWithdrawalHisController(debitData, bankData, deposit, debitUniq, bd.WITHDRAWAL);
   }
 
   /*송금 받기*/
-  public void recvBanking(ArrayList<DebitData> debitData, ArrayList<BankData> bankData,
-      String recvDebitNum, String callDebitNum, int deposit) {
+  public void recvBankRemittance(ArrayList<DebitData> debitData, ArrayList<BankData> bankData,
+      String recvDebitNum, String callUserName, String callBankName, String callDebitNum, int deposit) {
+	  int debitUniq = Integer.parseInt(serchUserDebit(debitData, 2, recvDebitNum));
+      int accountBalance = debitData.get(debitUniq).getAccountBalance();
+      int CalculateBalance = accountBalance + deposit;
+      
+      debitData.get(debitUniq).setAccountBalance(CalculateBalance);
+
+      System.out.println(recvDebitNum + "님이 "
+      		+ debitData.get(debitUniq).getDebitPhone() + "님에게 " + deposit + "원을 송금하였고 잔액은 "
+              + debitData.get(debitUniq).getAccountBalance() + " 원입니다.");
+      
+      recvNcallRemittanceHisController(debitData, bankData, debitUniq, callUserName, callBankName, callDebitNum, deposit, bd.RECV_REMITTANCE);
 
   }
 
   /*송금 보내기*/
-  public void callBanking(ArrayList<DebitData> debitData, ArrayList<BankData> bankData,
-      String recvDebitNum, String callDebitNum, int deposit) {
+  public void callBankRemittance(ArrayList<DebitData> debitData, ArrayList<BankData> bankData,
+      String recvDebitNum, String recvUserName, String recvBankName, String callDebitNum, int deposit) {
     int debitUniq = Integer.parseInt(serchUserDebit(debitData, 2, callDebitNum));
-    int debitBalance = debitData.get(debitUniq).getDebitBalance();
+    int accountBalance = debitData.get(debitUniq).getAccountBalance();
+    int CalculateBalance = accountBalance - deposit;
+
+    
+    if (!checkNegativeBalance(CalculateBalance)) {
+        return;
+    }
+    
+    debitData.get(debitUniq).setAccountBalance(CalculateBalance);
+    System.out.println(debitData.get(debitUniq).getDebitPhone() + "님이 "
+    		+ recvDebitNum + "님에게 " + deposit + "원을 송금하였고 잔액은 "
+            + debitData.get(debitUniq).getAccountBalance() + " 원입니다.");
+ 
+    
+    recvNcallRemittanceHisController(debitData, bankData, debitUniq, recvUserName, recvBankName, callDebitNum, deposit, bd.CALL_REMITTANCE);
+    
   }
 
   public String serchUserDebit(ArrayList<DebitData> debitData, int serchTyp, String serchData) {
@@ -78,19 +152,6 @@ public class BankController {
     return null;
   }
 
-  public void depsitNWithdrawalHisController(ArrayList<DebitData> debitData,
-      ArrayList<BankData> bankData, int deposit, int debitUniq, String hisType) {
-    if (hisType == bd.DEPOSIT) {
-      depsitHisInsert(debitData, bankData, deposit, debitUniq);
-    } else if (hisType == bd.WITHDRAWAL) {
-      withdrawalHisInsert(debitData, bankData, deposit, debitUniq);
-    } else if (hisType == bd.RECV_REMITTANCE) {
-
-    } else if (hisType == bd.CALL_REMITTANCE) {
-
-    }
-  }
-
   /*입금 히스토리 INSERT*/
   public void depsitHisInsert(ArrayList<DebitData> debitData, ArrayList<BankData> bankData,
       int deposit, int debitUniq) {
@@ -107,10 +168,11 @@ public class BankController {
         , ""
         , ""
         , deposit
-        , debitData.get(debitUniq).getDebitBalance());
+        , debitData.get(debitUniq).getAccountBalance());
 
     bankData.add(tempBankData);
   }
+
 
   /*출금 히스토리 INSERT*/
   public void withdrawalHisInsert(ArrayList<DebitData> debitData, ArrayList<BankData> bankData,
@@ -128,7 +190,49 @@ public class BankController {
         , debitData.get(debitUniq).getDebitNum()
         , debitData.get(debitUniq).getBankNo()
         , deposit
-        , debitData.get(debitUniq).getDebitBalance());
+        , debitData.get(debitUniq).getAccountBalance());
+
+    bankData.add(tempBankData);
+  }
+  
+  /*송금하기 히스토리 INSERT*/
+  public void callBankRemittanceHisInsert(ArrayList<DebitData> debitData, ArrayList<BankData> bankData
+	      , int debitUniq, String recvUserName, String recvBankName, String recvDebitNum, int deposit) {
+
+	  BankData tempBankData = new BankData(debitUniq + ""
+        , depsWithdHisCount(debitData, bankData, debitUniq) + ""
+        , debitData.get(debitUniq).getDebitNum()
+        , bd.CALL_REMITTANCE
+        , recvUserName
+        , recvDebitNum
+        , recvBankName
+        , dateReturnToString()
+        , debitData.get(debitUniq).getDebitUserName()
+        , debitData.get(debitUniq).getDebitNum()
+        , debitData.get(debitUniq).getBankNo()
+        , deposit
+        , debitData.get(debitUniq).getAccountBalance());
+
+    bankData.add(tempBankData);
+  }
+  
+  /*송금받기 히스토리 INSERT*/
+  public void recvBankRemittanceHisInsert(ArrayList<DebitData> debitData, ArrayList<BankData> bankData
+	      , int debitUniq, String callUserName, String callBankName, String callDebitNum, int deposit) {
+
+	  BankData tempBankData = new BankData(debitUniq + ""
+        , depsWithdHisCount(debitData, bankData, debitUniq) + ""
+        , debitData.get(debitUniq).getDebitNum()
+        , bd.RECV_REMITTANCE
+        , debitData.get(debitUniq).getDebitUserName()
+        , debitData.get(debitUniq).getDebitNum()
+        , debitData.get(debitUniq).getBankNo()
+        , dateReturnToString()
+        , callUserName
+        , callDebitNum
+        , callBankName
+        , deposit
+        , debitData.get(debitUniq).getAccountBalance());
 
     bankData.add(tempBankData);
   }
@@ -137,7 +241,7 @@ public class BankController {
       int debitUniq) {
     int bankCnt = 0;
     for (int i = 0; i < bankData.size(); i++) {
-      if (bankData.get(i).getRecvDebitNum().equals(debitData.get(debitUniq).getDebitNum())) {
+      if (bankData.get(i).getUserDebitNum().equals(debitData.get(debitUniq).getDebitNum())) {
         bankCnt++;
       }
     }
@@ -154,50 +258,18 @@ public class BankController {
     return dateToStr;
   }
 
-  /*입출금 내역 출력 컨트롤러*/
-  public void depsWithHisPrintController(ArrayList<BankData> bankData, String debitNum) {
-    //System.out.println("번호 / 계좌번호 / 거래유형 / 수신자명 / 수신자 계좌번호 / 수신자 은행코드 / ");
-    for (int i = 0; i < bankData.size(); i++) {
-      if (bankData.get(i).getUserDebitNum().equals(debitNum)) {
-        BankData tempBD = bankData.get(i);
-        if (tempBD.getTrState().equals(bd.DEPOSIT)) {
-          depositHisPrint(tempBD);
-        } else if (tempBD.getTrState().equals(bd.WITHDRAWAL)) {
-          withdrawalHisPrint(tempBD);
-        } else if (tempBD.getTrState().equals(bd.RECV_REMITTANCE)) {
-
-        } else if (tempBD.getTrState().equals(bd.CALL_REMITTANCE)) {
-
-        }
-      }
-    }
+  public void depsWithHisPrint(BankData bankData, String bankCodeName){
+	  System.out.println(bankData.getTrHisNo() + " / " + bankData.getRecvDebitNum() + " / " + bankData
+		        .getUserDebitNum() + " / "
+		        + bankCodeName + " / " + bankData.getRecvUserName() + " / "
+		        + " / " + bankData.getRecvBankName() + " / " + bankData.getCallUserName() + " / " + bankData
+		        .getCallDebitNum()
+		        + " / " + bankData.getCallBankName() + " / " + bankData.getCallRemittance() + " / "
+		        + bankData.getAccountBalance());
   }
-
-  /*입금 내역 출력*/
-  public void depositHisPrint(BankData bankData) {
-    System.out.println(bankData.getTrHisNo() + " / " + bankData.getRecvDebitNum() + " / " + bankData
-        .getUserDebitNum() + " / "
-        + "입금" + " / " + bankData.getRecvUserName() + " / "
-        + " / " + bankData.getRecvBankName() + " / " + bankData.getCallUserName() + " / " + bankData
-        .getCallDebitNum()
-        + " / " + bankData.getCallBankName() + " / " + bankData.getCallRemittance() + " / "
-        + bankData.getDebitBalance());
-
-  }
-
-  /*입금 내역 출력*/
-  public void withdrawalHisPrint(BankData bankData) {
-    System.out.println(bankData.getTrHisNo() + " / " + bankData.getRecvDebitNum() + " / " + bankData
-        .getUserDebitNum() + " / "
-        + "출금" + " / " + bankData.getRecvUserName() + " / "
-        + " / " + bankData.getRecvBankName() + " / " + bankData.getCallUserName() + " / " + bankData
-        .getCallDebitNum()
-        + " / " + bankData.getCallBankName() + " / " + bankData.getCallRemittance() + " / "
-        + bankData.getDebitBalance());
-
-  }
-
-  public boolean checkBalance(int cash) {
+  
+ 
+  public boolean checkNegativeBalance(int cash) {
     if (cash < 0) {
       System.out.println("******잔액이 부족합니다.*******");
       return false;
